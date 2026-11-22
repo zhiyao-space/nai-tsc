@@ -3,6 +3,7 @@ import { Copy } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { tagZh } from "@/lib/tagZh";
 import type { WeightMode } from "@/types";
 
 interface PromptOutputProps {
@@ -17,6 +18,11 @@ export function PromptOutput({ tags }: PromptOutputProps) {
     const parts = weight === "emphasis" ? tags.map((t) => `{${t}}`) : tags;
     return parts.join(", ");
   }, [tags, weight]);
+
+  const zhGloss = useMemo(
+    () => tags.map((t) => tagZh(t)).join("、"),
+    [tags]
+  );
 
   const handleCopy = async () => {
     try {
@@ -37,6 +43,11 @@ export function PromptOutput({ tags }: PromptOutputProps) {
             </span>
           )}
         </div>
+        {tags.length > 0 && (
+          <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground">
+            中文对照：{zhGloss}
+          </p>
+        )}
         <div className="mt-3 flex items-center gap-3">
           <ToggleGroup
             type="single"
